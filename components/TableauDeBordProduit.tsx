@@ -1,14 +1,15 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Video } from "lucide-react";
+import { ChevronLeft, ChevronRight, Video } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { BorderBeam } from "@/components/ui/border-beam";
 import FilterButton from "./FilterButton";
+import { Button } from "./ui/button";
 
 interface ProductCardProps {
   imageUrl: string;
@@ -159,6 +160,18 @@ export default function TableauDeBordProduit(
     },
   ];
 
+  const scrollContainerRef = useRef(null);
+
+  const scroll = (direction: string) => {
+    if (scrollContainerRef.current) {
+      const scrollAmount = direction === "left" ? -200 : 200;
+      (scrollContainerRef.current as HTMLElement).scrollBy({
+        left: scrollAmount,
+        behavior: "smooth",
+      });
+    }
+  };
+
   const VideoSkeleton = () => (
     <div className="overflow-hidden w-[250px] rounded-lg group cursor-pointer transition-all duration-300 hover:shadow-lg">
       <CardContent className="p-0 rounded-lg w-[250px]">
@@ -247,10 +260,14 @@ export default function TableauDeBordProduit(
         </div>
 
         {/* Left column (Product listings) - Now second on small screens */}
-        <div className="lg:w-2/3 lg:order-1 max-h-[550px] overflow-y-auto hide-scrollbar">
+        <div className="lg:w-2/3 lg:order-1 max-h-[550px]">
           {/* Products from minato.ai */}
-          <div className="container mx-auto px-4 py-4">
-            <div className="flex flex-wrap justify-center gap-4 p-4">
+          <div className="container mx-auto px-4 py-4 relative">
+            <div
+              ref={scrollContainerRef}
+              className="flex overflow-x-auto scrollbar-hide hide-scrollbar space-x-4 p-4"
+              style={{ scrollSnapType: "x mandatory" }}
+            >
               {isLoading
                 ? Array(9)
                     .fill(null)
@@ -258,7 +275,8 @@ export default function TableauDeBordProduit(
                 : products.map((product, index) => (
                     <motion.div
                       key={index}
-                      className="relative w-[200px] h-[300px] rounded-md overflow-hidden"
+                      className="relative w-[200px] h-[300px] rounded-md overflow-hidden flex-shrink-0"
+                      style={{ scrollSnapAlign: "start" }}
                       whileHover={{
                         scale: 1.05,
                         boxShadow: "0 10px 20px rgba(0,0,0,0.2)",
@@ -304,11 +322,31 @@ export default function TableauDeBordProduit(
                     </motion.div>
                   ))}
             </div>
+            <Button
+              variant="outline"
+              size="icon"
+              className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white"
+              onClick={() => scroll("left")}
+            >
+              <ChevronLeft className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="outline"
+              size="icon"
+              className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white"
+              onClick={() => scroll("right")}
+            >
+              <ChevronRight className="h-4 w-4" />
+            </Button>
           </div>
 
           {/* Products from other sources */}
-          <div className="container mx-auto px-4 py-4">
-            <div className="flex flex-wrap justify-center gap-4 p-4">
+          <div className="container mx-auto px-4 py-4 relative">
+            <div
+              ref={scrollContainerRef}
+              className="flex overflow-x-auto scrollbar-hide hide-scrollbar space-x-4 p-4"
+              style={{ scrollSnapType: "x mandatory" }}
+            >
               {isLoading
                 ? Array(8)
                     .fill(null)
@@ -316,7 +354,8 @@ export default function TableauDeBordProduit(
                 : product.map((product, index) => (
                     <motion.div
                       key={index}
-                      className="w-[calc(50%-0.5rem)] sm:w-[200px] bg-white border border-[#f9fc54] shadow-sm rounded-md overflow-hidden"
+                      className="w-[180px] sm:w-[200px] bg-white border border-[#f9fc54] shadow-sm rounded-md overflow-hidden flex-shrink-0"
+                      style={{ scrollSnapAlign: "start" }}
                       whileHover={{
                         scale: 1.05,
                         boxShadow: "0 10px 20px rgba(0,0,0,0.2)",
@@ -366,6 +405,22 @@ export default function TableauDeBordProduit(
                     </motion.div>
                   ))}
             </div>
+            <Button
+              variant="outline"
+              size="icon"
+              className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white"
+              onClick={() => scroll("left")}
+            >
+              <ChevronLeft className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="outline"
+              size="icon"
+              className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white"
+              onClick={() => scroll("right")}
+            >
+              <ChevronRight className="h-4 w-4" />
+            </Button>
           </div>
         </div>
       </div>

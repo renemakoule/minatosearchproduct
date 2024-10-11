@@ -161,14 +161,24 @@ export default function TableauDeBordProduit(
   ];
 
   const scrollContainerRef = useRef(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkIfMobile = () => {
+      setIsMobile(window.innerWidth < 768); // Considère les écrans de moins de 768px comme mobiles
+    };
+
+    checkIfMobile();
+    window.addEventListener("resize", checkIfMobile);
+
+    return () => window.removeEventListener("resize", checkIfMobile);
+  }, []);
 
   const scroll = (direction: string) => {
-    if (scrollContainerRef.current) {
+    if (scrollContainerRef.current && isMobile) {
       const scrollAmount = direction === "left" ? -200 : 200;
-      (scrollContainerRef.current as HTMLElement).scrollBy({
-        left: scrollAmount,
-        behavior: "smooth",
-      });
+      const scrollContainer = scrollContainerRef.current as HTMLElement;
+      scrollContainer.scrollBy({ left: scrollAmount, behavior: "smooth" });
     }
   };
 
@@ -265,8 +275,15 @@ export default function TableauDeBordProduit(
           <div className="container mx-auto px-4 py-4 relative">
             <div
               ref={scrollContainerRef}
-              className="flex overflow-x-auto scrollbar-hide hide-scrollbar space-x-4 p-4"
-              style={{ scrollSnapType: "x mandatory" }}
+              className={`
+          ${
+            isMobile
+              ? "flex overflow-x-auto scrollbar-hide hide-scrollbar space-x-4"
+              : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
+          }
+          p-4
+        `}
+              style={isMobile ? { scrollSnapType: "x mandatory" } : {}}
             >
               {isLoading
                 ? Array(9)
@@ -275,8 +292,11 @@ export default function TableauDeBordProduit(
                 : products.map((product, index) => (
                     <motion.div
                       key={index}
-                      className="relative w-[200px] h-[300px] rounded-md overflow-hidden flex-shrink-0"
-                      style={{ scrollSnapAlign: "start" }}
+                      className={`
+                  relative w-[200px] h-[300px] rounded-md overflow-hidden
+                  ${isMobile ? "flex-shrink-0" : "mx-auto"}
+                `}
+                      style={isMobile ? { scrollSnapAlign: "start" } : {}}
                       whileHover={{
                         scale: 1.05,
                         boxShadow: "0 10px 20px rgba(0,0,0,0.2)",
@@ -322,30 +342,41 @@ export default function TableauDeBordProduit(
                     </motion.div>
                   ))}
             </div>
-            <Button
-              variant="outline"
-              size="icon"
-              className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white"
-              onClick={() => scroll("left")}
-            >
-              <ChevronLeft className="h-4 w-4" />
-            </Button>
-            <Button
-              variant="outline"
-              size="icon"
-              className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white"
-              onClick={() => scroll("right")}
-            >
-              <ChevronRight className="h-4 w-4" />
-            </Button>
+            {isMobile && (
+              <>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white"
+                  onClick={() => scroll("left")}
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white"
+                  onClick={() => scroll("right")}
+                >
+                  <ChevronRight className="h-4 w-4" />
+                </Button>
+              </>
+            )}
           </div>
 
           {/* Products from other sources */}
           <div className="container mx-auto px-4 py-4 relative">
             <div
               ref={scrollContainerRef}
-              className="flex overflow-x-auto scrollbar-hide hide-scrollbar space-x-4 p-4"
-              style={{ scrollSnapType: "x mandatory" }}
+              className={`
+          ${
+            isMobile
+              ? "flex overflow-x-auto scrollbar-hide space-x-4"
+              : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
+          }
+          p-4
+        `}
+              style={isMobile ? { scrollSnapType: "x mandatory" } : {}}
             >
               {isLoading
                 ? Array(8)
@@ -354,8 +385,11 @@ export default function TableauDeBordProduit(
                 : product.map((product, index) => (
                     <motion.div
                       key={index}
-                      className="w-[180px] sm:w-[200px] bg-white border border-[#f9fc54] shadow-sm rounded-md overflow-hidden flex-shrink-0"
-                      style={{ scrollSnapAlign: "start" }}
+                      className={`
+                  w-[180px] sm:w-[200px] bg-white border border-[#f9fc54] shadow-sm rounded-md overflow-hidden
+                  ${isMobile ? "flex-shrink-0" : ""}
+                `}
+                      style={isMobile ? { scrollSnapAlign: "start" } : {}}
                       whileHover={{
                         scale: 1.05,
                         boxShadow: "0 10px 20px rgba(0,0,0,0.2)",
@@ -405,22 +439,26 @@ export default function TableauDeBordProduit(
                     </motion.div>
                   ))}
             </div>
-            <Button
-              variant="outline"
-              size="icon"
-              className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white"
-              onClick={() => scroll("left")}
-            >
-              <ChevronLeft className="h-4 w-4" />
-            </Button>
-            <Button
-              variant="outline"
-              size="icon"
-              className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white"
-              onClick={() => scroll("right")}
-            >
-              <ChevronRight className="h-4 w-4" />
-            </Button>
+            {isMobile && (
+              <>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white"
+                  onClick={() => scroll("left")}
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white"
+                  onClick={() => scroll("right")}
+                >
+                  <ChevronRight className="h-4 w-4" />
+                </Button>
+              </>
+            )}
           </div>
         </div>
       </div>

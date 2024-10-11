@@ -386,7 +386,7 @@ export default function TableauDeBordProduit(
                     <motion.div
                       key={index}
                       className={`
-                  w-[180px] sm:w-[200px] bg-white border border-[#f9fc54] shadow-sm rounded-md overflow-hidden
+                  w-[200px] sm:w-[200px] bg-white border border-[#f9fc54] shadow-sm rounded-md overflow-hidden
                   ${isMobile ? "flex-shrink-0" : ""}
                 `}
                       style={isMobile ? { scrollSnapAlign: "start" } : {}}

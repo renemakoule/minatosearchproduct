@@ -5,8 +5,6 @@ import { useState, useEffect } from "react";
 import LogoMinato from "./LogoMinato";
 import CanvasCursor from "./CursorCanvas/canvas-cursor";
 import TableauDeBordProduit from "./TableauDeBordProduit";
-import Popup from "./Popup";
-
 export default function Component() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [showResults, setShowResults] = useState(false);

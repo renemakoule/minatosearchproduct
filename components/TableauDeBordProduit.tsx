@@ -8,7 +8,6 @@ import { Video } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { BorderBeam } from "@/components/ui/border-beam";
-import Popup from "./Popup";
 import FilterButton from "./FilterButton";
 
 interface ProductCardProps {
